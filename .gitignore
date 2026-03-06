@@ -1,0 +1,20 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+*.tfvars
+terraform.tfvars
+
+# Ansible
+*.retry
+
+# SSH Keys - NEVER commit
+*.pem
+*.pub
+.env
+*credentials*
+*secret*
+
+# OS
+.DS_Store
