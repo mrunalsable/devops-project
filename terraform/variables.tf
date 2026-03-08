@@ -1,0 +1,28 @@
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "ami_id" {
+  description = "Ubuntu 22.04 AMI ID"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "EC2 instance type"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "key_name" {
+  description = "SSH key pair name in AWS"
+  type        = string
+  default     = "devops-project"
+}
+
+variable "project_name" {
+  description = "Project name for tagging"
+  type        = string
+  default     = "devops-project"
+}
