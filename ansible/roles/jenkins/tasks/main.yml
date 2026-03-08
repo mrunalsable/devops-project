@@ -1,0 +1,76 @@
+---
+- name: Install Java (Jenkins dependency)
+  apt:
+    name: openjdk-17-jdk
+    state: present
+    update_cache: yes
+
+- name: Create keyrings directory
+  file:
+    path: /usr/share/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Remove old Jenkins repo and key files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/share/keyrings/jenkins-keyring.gpg
+    - /etc/apt/sources.list.d/jenkins.list
+
+- name: Import Jenkins GPG key from keyserver
+  shell: |
+    gpg --batch --keyserver keyserver.ubuntu.com \
+      --recv-keys 7198F4B714ABFC68 && \
+    gpg --batch --export 7198F4B714ABFC68 | \
+      tee /usr/share/keyrings/jenkins-keyring.gpg > /dev/null
+  args:
+    creates: /usr/share/keyrings/jenkins-keyring.gpg
+
+- name: Add Jenkins repository
+  copy:
+    content: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/\n"
+    dest: /etc/apt/sources.list.d/jenkins.list
+    mode: '0644'
+
+- name: Update apt cache after Jenkins repo
+  apt:
+    update_cache: yes
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+- name: Start and enable Jenkins
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+
+- name: Add jenkins user to docker group
+  user:
+    name: jenkins
+    groups: docker
+    append: yes
+
+- name: Restart Jenkins to apply docker group
+  systemd:
+    name: jenkins
+    state: restarted
+
+- name: Wait for Jenkins to start
+  wait_for:
+    port: 8080
+    delay: 10
+    timeout: 120
+
+- name: Get Jenkins initial admin password
+  command: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkins_password
+  changed_when: false
+
+- name: Display Jenkins initial password
+  debug:
+    msg: "🔑 Jenkins Initial Password: {{ jenkins_password.stdout }}"
