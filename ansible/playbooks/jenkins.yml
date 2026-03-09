@@ -25,5 +25,5 @@
       debug:
         msg:
           - "✅ Jenkins is ready!"
-          - "🌐 Access Jenkins at: http://3.236.136.163:8080"
+          - "🌐 Access Jenkins at: http://3.219.242.79:8080"
           - "🔑 Use the password shown above to unlock Jenkins"

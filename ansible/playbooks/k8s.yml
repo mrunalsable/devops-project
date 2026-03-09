@@ -1,0 +1,35 @@
+---
+- name: Setup K3s Kubernetes on K8s Server
+  hosts: k8s
+  become: yes
+  gather_facts: yes
+
+  pre_tasks:
+    - name: Wait for SSH to be available
+      wait_for_connection:
+        timeout: 120
+
+  roles:
+    - k3s
+
+  post_tasks:
+    - name: Verify K3s is running
+      systemd:
+        name: k3s
+        state: started
+
+    - name: Show cluster info
+      shell: k3s kubectl cluster-info
+      register: cluster_info
+      changed_when: false
+
+    - name: Display cluster info
+      debug:
+        msg: "{{ cluster_info.stdout_lines }}"
+
+    - name: Show access info
+      debug:
+        msg:
+          - "✅ K3s is ready!"
+          - "🌐 K8s API: https://100.24.97.178:6443"
+          - "📋 Use kubectl to manage the cluster"
