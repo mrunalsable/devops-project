@@ -70,7 +70,7 @@ pipeline {
                     ssh -i /var/lib/jenkins/.ssh/devops-project \
                         -o StrictHostKeyChecking=no \
                         ubuntu@${K8S_SERVER} \
-                        'sudo k3s kubectl rollout status deployment/flask-app --timeout=60s'
+                        'sudo k3s kubectl rollout status deployment/flask-app --timeout=120s'
                 """
             }
         }
