@@ -49,16 +49,16 @@ pipeline {
                 sh """
                     sed -i 's|DOCKERHUB_USERNAME/flask-app:latest|${IMAGE_NAME}:${IMAGE_TAG}|g' \
                         kubernetes/deployment.yml
-                    
-                    ssh -i /var/lib/jenkins/.ssh/devops-project \
-                        -o StrictHostKeyChecking=no \
-                        ubuntu@${K8S_SERVER} \
-                        'sudo k3s kubectl apply -f -' < kubernetes/deployment.yml
 
                     ssh -i /var/lib/jenkins/.ssh/devops-project \
                         -o StrictHostKeyChecking=no \
                         ubuntu@${K8S_SERVER} \
-                        'sudo k3s kubectl apply -f -' < kubernetes/service.yml
+                        'sudo k3s kubectl apply --validate=false -f -' < kubernetes/deployment.yml
+
+                    ssh -i /var/lib/jenkins/.ssh/devops-project \
+                        -o StrictHostKeyChecking=no \
+                        ubuntu@${K8S_SERVER} \
+                        'sudo k3s kubectl apply --validate=false -f -' < kubernetes/service.yml
                 """
             }
         }
