@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         DOCKERHUB_USERNAME    = credentials('dockerhub-username')
-        K8S_SERVER            = '100.24.97.178'
+        K8S_SERVER            = '44.202.204.228'
         IMAGE_NAME            = "${DOCKERHUB_USERNAME}/flask-app"
         IMAGE_TAG             = "${BUILD_NUMBER}"
     }
